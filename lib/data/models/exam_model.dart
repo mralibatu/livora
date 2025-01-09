@@ -1,34 +1,27 @@
 import 'dart:convert';
 
-import 'package:livora/data/models/exam_question.dart';
-import 'package:livora/data/models/exam_user_exam.dart';
-
 class Exam {
   int id;
   String examName;
-  dynamic timerSeconds;
+  int? timerSeconds;
   bool isPrivate;
   int createdById;
-  dynamic isMatching;
+  bool isMatching;
   List<Examxuserexam> examxuserexam;
-  List<Examxquestion> examxquestion;
 
   Exam({
     required this.id,
     required this.examName,
-    required this.timerSeconds,
+    this.timerSeconds,
     required this.isPrivate,
     required this.createdById,
     required this.isMatching,
     required this.examxuserexam,
-    required this.examxquestion,
   });
 
   factory Exam.fromRawJson(String str) => Exam.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
-
-  List<Exam> getExamsFromJson (String json) => List.from(jsonDecode(json)).map((exam) => Exam.fromJson(exam)).toList();
 
   factory Exam.fromJson(Map<String, dynamic> json) => Exam(
     id: json["id"],
@@ -38,7 +31,6 @@ class Exam {
     createdById: json["created_by_id"],
     isMatching: json["is_matching"],
     examxuserexam: List<Examxuserexam>.from(json["examxuserexam"].map((x) => Examxuserexam.fromJson(x))),
-    examxquestion: List<Examxquestion>.from(json["examxquestion"].map((x) => Examxquestion.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -49,6 +41,65 @@ class Exam {
     "created_by_id": createdById,
     "is_matching": isMatching,
     "examxuserexam": List<dynamic>.from(examxuserexam.map((x) => x.toJson())),
-    "examxquestion": List<dynamic>.from(examxquestion.map((x) => x.toJson())),
+  };
+}
+
+class Examxuserexam {
+  int id;
+  int? examId;
+  int? userId;
+  bool? isCompleted;
+  int? point;
+  Userexamxuser userexamxuser;
+
+  Examxuserexam({
+    required this.id,
+    this.examId,
+    this.userId,
+    this.isCompleted,
+    this.point,
+    required this.userexamxuser,
+  });
+
+  factory Examxuserexam.fromRawJson(String str) => Examxuserexam.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory Examxuserexam.fromJson(Map<String, dynamic> json) => Examxuserexam(
+    id: json["id"],
+    examId: json["exam_id"],
+    userId: json["user_id"],
+    isCompleted: json["is_completed"],
+    point: json["point"],
+    userexamxuser: Userexamxuser.fromJson(json["userexamxuser"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "exam_id": examId,
+    "user_id": userId,
+    "is_completed": isCompleted,
+    "point": point,
+    "userexamxuser": userexamxuser.toJson(),
+  };
+}
+
+class Userexamxuser {
+  String username;
+
+  Userexamxuser({
+    required this.username,
+  });
+
+  factory Userexamxuser.fromRawJson(String str) => Userexamxuser.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory Userexamxuser.fromJson(Map<String, dynamic> json) => Userexamxuser(
+    username: json["username"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "username": username,
   };
 }
