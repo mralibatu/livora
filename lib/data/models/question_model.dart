@@ -1,33 +1,39 @@
 import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
+part 'question_model.g.dart';
 
-class MultipleChoiceQuestion {
-  Question question;
-  List<Option> options;
+@JsonSerializable()
+class Question {
+  @JsonKey(name: 'id')
+  final int id;
+  @JsonKey(name: 'question_text')
+  final String questionText;
+  @JsonKey(name: 'is_matching')
+  final bool isMatching;
+  @JsonKey(name: 'matchingPairs')
+  final List<MatchingPair>? matchingPairs; // For matching questions
 
-  MultipleChoiceQuestion({
-    required this.question,
-    required this.options,
+  Question({
+    required this.id,
+    required this.questionText,
+    required this.isMatching,
+    this.matchingPairs,
   });
 
-  factory MultipleChoiceQuestion.fromRawJson(String str) => MultipleChoiceQuestion.fromJson(json.decode(str));
+  factory Question.fromJson(Map<String, dynamic> json) =>
+      _$QuestionFromJson(json);
 
-  String toRawJson() => json.encode(toJson());
-
-  factory MultipleChoiceQuestion.fromJson(Map<String, dynamic> json) => MultipleChoiceQuestion(
-    question: Question.fromJson(json["question"]),
-    options: List<Option>.from(json["options"].map((x) => Option.fromJson(x))),
-  );
-
-  Map<String, dynamic> toJson() => {
-    "question": question.toJson(),
-    "options": List<dynamic>.from(options.map((x) => x.toJson())),
-  };
+  Map<String, dynamic> toJson() => _$QuestionToJson(this);
 }
 
+@JsonSerializable()
 class Option {
-  int id;
-  String optionText;
-  bool isCorrect;
+  @JsonKey(name: 'id')
+  final int id;
+  @JsonKey(name: 'option_text')
+  final String optionText;
+  @JsonKey(name: 'is_correct')
+  final bool isCorrect;
 
   Option({
     required this.id,
@@ -35,55 +41,19 @@ class Option {
     required this.isCorrect,
   });
 
-  factory Option.fromRawJson(String str) => Option.fromJson(json.decode(str));
+  factory Option.fromJson(Map<String, dynamic> json) => _$OptionFromJson(json);
 
-  String toRawJson() => json.encode(toJson());
-
-  factory Option.fromJson(Map<String, dynamic> json) => Option(
-    id: json["id"],
-    optionText: json["option_text"],
-    isCorrect: json["is_correct"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "option_text": optionText,
-    "is_correct": isCorrect,
-  };
+  Map<String, dynamic> toJson() => _$OptionToJson(this);
 }
 
-class MatchingQuestion {
-  Question question;
-  List<MatchingPair> matchingPairs;
-
-  MatchingQuestion({
-    required this.question,
-    required this.matchingPairs,
-  });
-
-  // fromJson: JSON'dan MatchingQuestion nesnesi oluşturur
-  factory MatchingQuestion.fromJson(Map<String, dynamic> json) {
-    return MatchingQuestion(
-      question: Question.fromJson(json['question']),
-      matchingPairs: (json['matchingPairs'] as List<dynamic>)
-          .map((pair) => MatchingPair.fromJson(pair))
-          .toList(),
-    );
-  }
-
-  // toJson: MatchingQuestion nesnesini JSON'a çevirir
-  Map<String, dynamic> toJson() {
-    return {
-      'question': question.toJson(),
-      'matchingPairs': matchingPairs.map((pair) => pair.toJson()).toList(),
-    };
-  }
-}
-
+@JsonSerializable()
 class MatchingPair {
-  int id;
-  String itemLeft;
-  String itemRight;
+  @JsonKey(name: 'id')
+  final int id;
+  @JsonKey(name: 'itemLeft')
+  final String itemLeft;
+  @JsonKey(name: 'itemRight')
+  final String itemRight;
 
   MatchingPair({
     required this.id,
@@ -91,53 +61,32 @@ class MatchingPair {
     required this.itemRight,
   });
 
-  // fromJson: JSON'dan MatchingPair nesnesi oluşturur
-  factory MatchingPair.fromJson(Map<String, dynamic> json) {
-    return MatchingPair(
-      id: json['id'],
-      itemLeft: json['itemLeft'],
-      itemRight: json['itemRight'],
-    );
-  }
+  factory MatchingPair.fromJson(Map<String, dynamic> json) =>
+      _$MatchingPairFromJson(json);
 
-  // toJson: MatchingPair nesnesini JSON'a çevirir
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'itemLeft': itemLeft,
-      'itemRight': itemRight,
-    };
-  }
+  Map<String, dynamic> toJson() => _$MatchingPairToJson(this);
 }
 
-class Question {
-  int id;
-  int? examId;
-  String questionText;
-  bool isMatching;
+class QuestionOption {
+  Question question;
+  List<Option> options;
 
-  Question({
-    required this.id,
-    this.examId,
-    required this.questionText,
-    required this.isMatching,
+  QuestionOption({
+    required this.question,
+    required this.options,
   });
 
-  factory Question.fromRawJson(String str) => Question.fromJson(json.decode(str));
+  factory QuestionOption.fromRawJson(String str) => QuestionOption.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory Question.fromJson(Map<String, dynamic> json) => Question(
-    id: json["id"],
-    examId: json["exam_id"],
-    questionText: json["question_text"],
-    isMatching: json["is_matching"],
+  factory QuestionOption.fromJson(Map<String, dynamic> json) => QuestionOption(
+    question: Question.fromJson(json["question"]),
+    options: List<Option>.from(json["options"].map((x) => Option.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "exam_id": examId,
-    "question_text": questionText,
-    "is_matching": isMatching,
+    "question": question.toJson(),
+    "options": List<dynamic>.from(options.map((x) => x.toJson())),
   };
 }

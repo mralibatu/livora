@@ -38,6 +38,10 @@ dependencies:
   get: ^4.6.6
   google_fonts: ^6.2.1
   json_annotation: ^4.9.0
+  shared_preferences: ^2.3.5
+  dio: ^5.1.2
+  english_words: ^4.0.0
+  custom_refresh_indicator: ^4.0.1
 
 dev_dependencies:
   flutter_test:

@@ -1,16 +1,27 @@
 import 'dart:convert';
 
+import 'package:json_annotation/json_annotation.dart';
+import 'package:livora/data/models/category_model.dart';
+
+part 'word_model.g.dart';
+
+@JsonSerializable()
 class Word {
-  int id;
-  String foreignWord;
-  String mainLangWord;
-  String hintText;
-  int levelId;
-  dynamic partOfSpeechId;
-  int categoryId;
-  Wordxlevel wordxlevel;
-  dynamic wordxpartofspeech;
-  Wordxcategory wordxcategory;
+  final int id;
+  @JsonKey(name: 'foreign_word')
+  final String foreignWord;
+  @JsonKey(name: 'main_lang_word')
+  final String mainLangWord;
+  @JsonKey(name: 'hint_text')
+  final String hintText;
+  @JsonKey(name: 'level_id')
+  final int levelId;
+  @JsonKey(name: 'part_of_speech_id')
+  final int? partOfSpeechId;
+  @JsonKey(name: 'category_id')
+  final int categoryId;
+  @JsonKey(name: 'wordxcategory')
+  final Category? category;
 
   Word({
     required this.id,
@@ -18,92 +29,51 @@ class Word {
     required this.mainLangWord,
     required this.hintText,
     required this.levelId,
-    required this.partOfSpeechId,
+    this.partOfSpeechId,
     required this.categoryId,
-    required this.wordxlevel,
-    required this.wordxpartofspeech,
-    required this.wordxcategory,
+    this.category,
   });
 
-  factory Word.fromRawJson(String str) => Word.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
-  factory Word.fromJson(Map<String, dynamic> json) => Word(
-    id: json["id"],
-    foreignWord: json["foreign_word"],
-    mainLangWord: json["main_lang_word"],
-    hintText: json["hint_text"],
-    levelId: json["level_id"],
-    partOfSpeechId: json["part_of_speech_id"],
-    categoryId: json["category_id"],
-    wordxlevel: Wordxlevel.fromJson(json["wordxlevel"]),
-    wordxpartofspeech: json["wordxpartofspeech"],
-    wordxcategory: Wordxcategory.fromJson(json["wordxcategory"]),
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "foreign_word": foreignWord,
-    "main_lang_word": mainLangWord,
-    "hint_text": hintText,
-    "level_id": levelId,
-    "part_of_speech_id": partOfSpeechId,
-    "category_id": categoryId,
-    "wordxlevel": wordxlevel.toJson(),
-    "wordxpartofspeech": wordxpartofspeech,
-    "wordxcategory": wordxcategory.toJson(),
-  };
+  factory Word.fromJson(Map<String, dynamic> json) => _$WordFromJson(json);
+  Map<String, dynamic> toJson() => _$WordToJson(this);
 }
 
-class Wordxcategory {
-  String categoryName;
-  int difficultyLevel;
+class WordStats {
+  int totalWords;
+  int totalLearnedWords;
+  int totalFavoriteWords;
+  int totalReviewCount;
+  DateTime lastReviewed;
+  int streakCount;
 
-  Wordxcategory({
-    required this.categoryName,
-    required this.difficultyLevel,
+  WordStats({
+    required this.totalWords,
+    required this.totalLearnedWords,
+    required this.totalFavoriteWords,
+    required this.totalReviewCount,
+    required this.lastReviewed,
+    required this.streakCount,
   });
 
-  factory Wordxcategory.fromRawJson(String str) => Wordxcategory.fromJson(json.decode(str));
+  factory WordStats.fromRawJson(String str) => WordStats.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory Wordxcategory.fromJson(Map<String, dynamic> json) => Wordxcategory(
-    categoryName: json["category_name"],
-    difficultyLevel: json["difficulty_level"],
+  factory WordStats.fromJson(Map<String, dynamic> json) => WordStats(
+    totalWords: json["totalWords"],
+    totalLearnedWords: json["totalLearnedWords"],
+    totalFavoriteWords: json["totalFavoriteWords"],
+    totalReviewCount: json["totalReviewCount"],
+    lastReviewed: DateTime.parse(json["lastReviewed"]),
+    streakCount: json["streakCount"],
   );
 
   Map<String, dynamic> toJson() => {
-    "category_name": categoryName,
-    "difficulty_level": difficultyLevel,
-  };
-}
-
-class Wordxlevel {
-  String levelName;
-  String levelCefr;
-  int levelNumber;
-
-  Wordxlevel({
-    required this.levelName,
-    required this.levelCefr,
-    required this.levelNumber,
-  });
-
-  factory Wordxlevel.fromRawJson(String str) => Wordxlevel.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
-  factory Wordxlevel.fromJson(Map<String, dynamic> json) => Wordxlevel(
-    levelName: json["level_name"],
-    levelCefr: json["level_cefr"],
-    levelNumber: json["level_number"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "level_name": levelName,
-    "level_cefr": levelCefr,
-    "level_number": levelNumber,
+    "totalWords": totalWords,
+    "totalLearnedWords": totalLearnedWords,
+    "totalFavoriteWords": totalFavoriteWords,
+    "totalReviewCount": totalReviewCount,
+    "lastReviewed": lastReviewed.toIso8601String(),
+    "streakCount": streakCount,
   };
 }
