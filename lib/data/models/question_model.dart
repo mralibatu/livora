@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:json_annotation/json_annotation.dart';
+
 part 'question_model.g.dart';
 
 @JsonSerializable()
@@ -50,9 +51,9 @@ class Option {
 class MatchingPair {
   @JsonKey(name: 'id')
   final int id;
-  @JsonKey(name: 'itemLeft')
+  @JsonKey(name: 'item_left')
   final String itemLeft;
-  @JsonKey(name: 'itemRight')
+  @JsonKey(name: 'item_right')
   final String itemRight;
 
   MatchingPair({
@@ -69,24 +70,29 @@ class MatchingPair {
 
 class QuestionOption {
   Question question;
-  List<Option> options;
+  List<Option>? options;
+  List<MatchingPair>? matchingPairs;
 
-  QuestionOption({
-    required this.question,
-    required this.options,
-  });
+  QuestionOption({required this.question, this.options, this.matchingPairs});
 
-  factory QuestionOption.fromRawJson(String str) => QuestionOption.fromJson(json.decode(str));
+  factory QuestionOption.fromRawJson(String str) =>
+      QuestionOption.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
   factory QuestionOption.fromJson(Map<String, dynamic> json) => QuestionOption(
-    question: Question.fromJson(json["question"]),
-    options: List<Option>.from(json["options"].map((x) => Option.fromJson(x))),
-  );
+      question: Question.fromJson(json["question"]),
+      options: json["options"] == null
+          ? null
+          : List<Option>.from(json["options"].map((x) => Option.fromJson(x))),
+      matchingPairs: json["options"] == null
+          ? List<MatchingPair>.from(
+              json["matchingPairs"].map((x) => MatchingPair.fromJson(x)))
+          : null);
 
   Map<String, dynamic> toJson() => {
-    "question": question.toJson(),
-    "options": List<dynamic>.from(options.map((x) => x.toJson())),
-  };
+        "question": question.toJson(),
+        "options": options == null ? null : List<dynamic>.from(options!.map((x) => x.toJson())),
+        "matchingPairs": options == null ? List<dynamic>.from(options!.map((x) => x.toJson())) : null,
+      };
 }

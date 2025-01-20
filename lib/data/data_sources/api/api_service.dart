@@ -57,6 +57,15 @@ class ApiService {
     }
   }
 
+  Future<QuestionOption> getMatchingPairsByExamId(int examId) async {
+    try {
+      final response = await _dio.get('/exams/$examId/questions');
+      return QuestionOption.fromJson(response.data[0]);
+    } catch (e) {
+      throw Exception('Failed to fetch questions for exam: $e');
+    }
+  }
+
   Future<void> createQuestion(Question question) async {
     try {
       await _dio.post(
@@ -84,6 +93,32 @@ class ApiService {
     return (response.data as List).map((json) => User.fromJson(json)).toList();
   }
 
+  Future<User> updateUser(User user) async {
+    try {
+      final response = await _dio.post(
+        '/users/${user.id}/update',
+        data: user.toJson(),
+      );
+
+      if (response.statusCode == 200) {
+        return User.fromJson(response.data['data']);
+      } else {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          message: 'Failed to update user: ${response.statusMessage}',
+        );
+      }
+    } on DioException catch (e) {
+      throw DioException(
+        requestOptions: e.requestOptions,
+        message: 'Error updating user: ${e.message}',
+      );
+    } catch (e) {
+      throw Exception('Unexpected error while updating user: $e');
+    }
+  }
+
+
   Future<WordStats> getUserWordStats(int userId) async {
     try {
       final response = await _dio.get('/users/$userId/words');
@@ -100,6 +135,22 @@ class ApiService {
     } catch (e) {
       throw Exception('Failed to fetch word stats: $e');
     }
+  }
+
+  Future<ExamStat> getUserExamStatById(int userId, int examId) async {
+    try {
+      final response = await _dio.get('/users/$userId/examstats/$examId');
+      return ExamStat.fromJson(response.data);
+    } catch (e) {
+      throw Exception('Failed to fetch word stats: $e');
+    }
+  }
+
+  Future<void> updateUserExam(int userId, ExamStat examStat) async{
+    await _dio.post(
+      '/users/$userId/examstats/${examStat.examId}',
+      data: examStat.toJson(),
+    );
   }
 
   // Fetch Words
@@ -143,6 +194,39 @@ class ApiService {
   Future<WordList> getWordListById(int listId) async {
     final response = await _dio.get('/lists/$listId');
     return WordList.fromJson(response.data);
+  }
+
+  Future<Map<String, dynamic>> getWordsInfos(int userId, int wordId) async{
+    final response = await _dio.get('/users/$userId/wordstats/$wordId');
+    return response.data;
+  }
+
+  Future<void> updateWordInfo(int userId, Word word) async{
+    try {
+      final response = await _dio.post(
+        '/users/$userId/wordstats/${word.id}',
+        data: {
+          "is_learned": word.isLearned,
+          "is_favorite": word.isFavorite,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          message: 'Failed to update Word: ${response.statusMessage}',
+        );
+      }
+    } on DioException catch (e) {
+      throw DioException(
+        requestOptions: e.requestOptions,
+        message: 'Error updating Word: ${e.message}',
+      );
+    } catch (e) {
+      throw Exception('Unexpected error while updating Word: $e');
+    }
   }
 
   Future<WordList> createWordList(WordList wordList) async {

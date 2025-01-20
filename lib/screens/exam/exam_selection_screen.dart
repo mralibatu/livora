@@ -31,6 +31,7 @@ class _ExamSelectionState extends State<ExamSelection>
   void initState() {
     super.initState();
     _loadExams();
+    _loadExamStats();
     _initializeAnimations();
   }
 
@@ -93,16 +94,18 @@ class _ExamSelectionState extends State<ExamSelection>
             opacity: _fadeAnimation,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: isLoading ? FancyLoadingIndicator() : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildHeader(context),
-                  const SizedBox(height: 24),
-                  Expanded(
-                    child: _buildExamsList(),
-                  ),
-                ],
-              ),
+              child: isLoading
+                  ? FancyLoadingIndicator()
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildHeader(context),
+                        const SizedBox(height: 24),
+                        Expanded(
+                          child: _buildExamsList(),
+                        ),
+                      ],
+                    ),
             ),
           ),
         ),
@@ -243,9 +246,19 @@ class _ExamSelectionState extends State<ExamSelection>
             onTap: () async {
               // Navigate to the appropriate exam type
               if (!exam.isMatching) {
-                Get.to(() => MultipleChoiceExam(exam: exam));
-              } else{
-                Get.to(() => MatchingPairsExam());
+                Get.to(
+                  () => MultipleChoiceExam(
+                    exam: exam,
+                    examStat: examStats.examStats[index],
+                  ),
+                );
+              } else {
+                Get.to(
+                  () => MatchingPairsExam(
+                    exam: exam,
+                    examStat: examStats.examStats[index],
+                  ),
+                );
               }
             },
             borderRadius: BorderRadius.circular(16),
@@ -263,7 +276,9 @@ class _ExamSelectionState extends State<ExamSelection>
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Icon(
-                          exam.isMatching ? Icons.compare_arrows : Icons.check_circle_outline,
+                          exam.isMatching
+                              ? Icons.compare_arrows
+                              : Icons.check_circle_outline,
                           color: color,
                           size: 24,
                         ),
@@ -307,7 +322,9 @@ class _ExamSelectionState extends State<ExamSelection>
                       _buildExamDetail(
                         context,
                         Icons.timer_outlined,
-                        exam.timerSeconds == null ? "No Limit" : '${(exam.timerSeconds!/60).ceil()} Minutes',
+                        exam.timerSeconds == null
+                            ? "No Limit"
+                            : '${(exam.timerSeconds! / 60).ceil()} Minutes',
                         Colors.orange,
                       ),
                       const SizedBox(width: 16),
@@ -367,14 +384,14 @@ class _ExamSelectionState extends State<ExamSelection>
   }
 
   void _loadExams() async {
-    exams = await ApiService.apiService.getExams();
-    examStats = await ApiService.apiService.getUserExamStats(1);
+    exams = await examRepository.getExams();
+    examStats = await examRepository.getExamStats();
     setState(() {
       isLoading = false;
     });
   }
 
-  Future<void> _examStats() async{
+  Future<void> _loadExamStats() async {
     examStats = await ApiService.apiService.getUserExamStats(1);
   }
 }

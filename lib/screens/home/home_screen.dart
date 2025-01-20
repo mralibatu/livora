@@ -9,7 +9,6 @@ import 'package:livora/screens/break_daily_word/break_daily_word_screen.dart';
 import 'package:livora/screens/home/widgets/category_selection_menu.dart';
 import 'package:livora/screens/home/widgets/custom_bottom_bar.dart';
 import 'package:livora/screens/home/widgets/home_heading.dart';
-import 'package:livora/screens/home/widgets/level_selection.dart';
 import 'package:livora/screens/widgets/snake_light_effect_icon.dart';
 import 'package:livora/utils/themes/app_sizes.dart';
 
@@ -122,8 +121,9 @@ class _HomeScreenState extends State<HomeScreen>
                   height: 25,
                 ),
                 //Start Level
-                LevelSelection(),
+                //LevelSelection(),
                 //End Level
+
               ],
             ),
           ),

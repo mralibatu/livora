@@ -4,18 +4,18 @@ part 'user_model.g.dart';
 
 @JsonSerializable()
 class User {
-  final int id;
-  final String name;
-  final String surname;
-  final String username;
-  final String photo;
-  final String password;
+  int id;
+  String name;
+  String surname;
+  String username;
+  String photo;
+  String password;
   @JsonKey(name: 'daily_goal')
-  final int? dailyGoal;
+  int? dailyGoal;
   @JsonKey(name: 'streak_count')
-  final int streakCount;
+  int streakCount;
   @JsonKey(name: 'device_id')
-  final String deviceId;
+  String deviceId;
 
   User({
     required this.id,

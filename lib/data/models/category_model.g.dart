@@ -10,7 +10,7 @@ Category _$CategoryFromJson(Map<String, dynamic> json) => Category(
       id: (json['id'] as num).toInt(),
       categoryName: json['category_name'] as String,
       difficultyLevel: (json['difficulty_level'] as num).toInt(),
-      wordCount: (json['wordCount'] as num).toInt(),
+      wordCount: json['wordCount'] == null ? null : int.parse("1"),
       isWordCategory: json['isWordCategory'] as bool,
     );
 
@@ -18,6 +18,6 @@ Map<String, dynamic> _$CategoryToJson(Category instance) => <String, dynamic>{
       'id': instance.id,
       'category_name': instance.categoryName,
       'difficulty_level': instance.difficultyLevel,
-      'wordCount': instance.wordCount,
+      'wordCount': instance.wordCount?.toString(),
       'isWordCategory': instance.isWordCategory,
     };

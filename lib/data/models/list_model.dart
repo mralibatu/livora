@@ -1,18 +1,20 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:livora/data/models/category_model.dart';
+import 'package:livora/data/repositories/category_repository.dart';
 
 part 'list_model.g.dart';
 
 @JsonSerializable()
 class WordList {
-  final int id;
+  int id;
   @JsonKey(name: 'list_name')
-  final String listName;
+  String listName;
   @JsonKey(name: 'repeat_day')
-  final int? repeatDay;
+  int? repeatDay;
   @JsonKey(name: 'is_private')
-  final bool isPrivate;
+  bool isPrivate;
   @JsonKey(name: 'list_category_id')
-  final int? listCategoryId;
+  int? listCategoryId;
 
   WordList({
     required this.id,
@@ -25,4 +27,5 @@ class WordList {
   factory WordList.fromJson(Map<String, dynamic> json) =>
       _$WordListFromJson(json);
   Map<String, dynamic> toJson() => _$WordListToJson(this);
+
 }

@@ -22,6 +22,8 @@ class Word {
   final int categoryId;
   @JsonKey(name: 'wordxcategory')
   final Category? category;
+  bool? isLearned;
+  bool? isFavorite;
 
   Word({
     required this.id,
@@ -32,6 +34,8 @@ class Word {
     this.partOfSpeechId,
     required this.categoryId,
     this.category,
+    this.isLearned,
+    this.isFavorite,
   });
 
   factory Word.fromJson(Map<String, dynamic> json) => _$WordFromJson(json);
@@ -77,3 +81,5 @@ class WordStats {
     "streakCount": streakCount,
   };
 }
+
+

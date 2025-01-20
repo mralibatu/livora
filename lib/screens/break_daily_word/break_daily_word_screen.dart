@@ -1,6 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:livora/controllers/main_controller.dart';
+import 'package:livora/main.dart';
+import 'package:livora/screens/break_daily_word/daily_word_screen.dart';
 import 'package:livora/screens/categories/categories_screen.dart';
 import 'package:livora/screens/widgets/ball_indicator.dart';
 import 'package:livora/screens/widgets/snake_light_effect_icon.dart';
@@ -15,33 +18,35 @@ class BreakDailyWordScreen extends StatefulWidget {
 
 class _BreakDailyWordScreenState extends State<BreakDailyWordScreen>
     with SingleTickerProviderStateMixin {
-  bool _isFirstImage = true;
+  MainController mainController = Get.find<MainController>();
 
   Future<void> onRefresh() async {
     Random rnd = Random();
-    int seconds = 3 + rnd.nextInt(6);
-    changeEgg(seconds);
+    //int seconds = 3 + rnd.nextInt(6);
+    int seconds = 3;
+    mainController.changeEgg(seconds);
     await Future.delayed(Duration(seconds: seconds));
     toWordPage();
-  }
-
-  Future<void> changeEgg(int seconds) async {
-    await Future.delayed(Duration(seconds: (seconds / 2).floor()));
-    setState(() {
-      _isFirstImage = !_isFirstImage;
-    });
+    mainController.isFirstImage = true;
   }
 
   Future<void> toWordPage() async {
     await Future.delayed(Duration(seconds: 1));
-    Get.to(CategoriesScreen());
+    DailyWordSnackbar.show(
+      context,
+      word: "word",
+      partOfSpeech: "partOfSpeech",
+      definition: "definition",
+      example: "example",
+      displayDuration: Duration(seconds: 10),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.transparent,
       ),
       body: Stack(
         children: [
@@ -56,30 +61,35 @@ class _BreakDailyWordScreenState extends State<BreakDailyWordScreen>
             child: SingleChildScrollView(
               child: Stack(
                 children: [
-                  Column(
-                    children: [
-                      SizedBox(
-                        height: 200,
-                      ),
-                      AnimatedSwitcher(
-                        duration: Duration(milliseconds: 300),
-                        transitionBuilder: (child, animation) {
-                          return FadeTransition(
-                            opacity: animation,
-                            child: child,
-                          );
-                        },
-                        child: _isFirstImage
-                            ? Image.asset(
+                  SizedBox(
+                    height: Get.height,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        GetBuilder<MainController>(
+                          id: 'egg',
+                          builder: (controller) {
+                            return AnimatedSwitcher(duration: Duration(milliseconds: 300),
+                              transitionBuilder: (child, animation) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                );
+                              },
+                              child: controller.isFirstImage
+                                  ? Image.asset(
                                 'assets/images/just-egg.png',
                                 key: ValueKey('image1'),
                               )
-                            : Image.asset(
+                                  : Image.asset(
                                 'assets/images/crack-egg.png',
                                 key: ValueKey('image2'),
                               ),
-                      ),
-                    ],
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                   Column(
                     children: [
@@ -91,14 +101,14 @@ class _BreakDailyWordScreenState extends State<BreakDailyWordScreen>
                             SnakeSlideLightEffect(
                               icon: Icons.keyboard_double_arrow_down,
                               slideDirection: SlideDirection.topToBottom,
-                              size: AppSizes.h0 * 6,
+                              size: AppSizes.h0 * 4,
                             ),
                             Text(
                               "Swipe Below To Crack Your Daily Word",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: AppSizes.h0,
-                                color: Colors.white,
+                                color: Colors.black87,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),

@@ -3,12 +3,15 @@ import 'package:get/get.dart';
 import 'package:livora/data/models/exam_model.dart';
 import 'package:livora/data/models/question_model.dart';
 import 'package:livora/data/repositories/exam_repository.dart';
+import 'package:livora/routes/pages.dart';
+import 'package:livora/screens/exam/exam_type_selection_screen.dart';
 import 'package:livora/screens/widgets/loading_indicator.dart';
 
 class MultipleChoiceExam extends StatefulWidget {
-  MultipleChoiceExam({required this.exam,super.key});
+  MultipleChoiceExam({required this.exam,required this.examStat,super.key});
 
   Exam exam;
+  ExamStat examStat;
 
   @override
   State<MultipleChoiceExam> createState() => _MultipleChoiceExamState();
@@ -444,7 +447,7 @@ class _MultipleChoiceExamState extends State<MultipleChoiceExam>
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                       setState(() {
-
+                                          Get.offAll(ExamTypeSelectionScreen());
                                       });
                                     },
                                     style: ElevatedButton.styleFrom(
@@ -463,7 +466,7 @@ class _MultipleChoiceExamState extends State<MultipleChoiceExam>
                                   child: OutlinedButton(
                                     onPressed: () {
                                       Navigator.of(context).pop();
-                                      Get.back();
+                                      Get.toNamed(Pages.exam_selection);
                                     },
                                     style: OutlinedButton.styleFrom(
                                       padding: const EdgeInsets.symmetric(vertical: 16),

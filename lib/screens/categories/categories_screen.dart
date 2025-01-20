@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:livora/data/data_sources/api/api_service.dart';
 import 'package:livora/data/models/category_model.dart';
+import 'package:livora/data/models/word_model.dart';
+import 'package:livora/data/repositories/category_repository.dart';
 import 'package:livora/data/repositories/word_repository.dart';
+import 'package:livora/screens/list_vocabulary/list_word_screen.dart';
 import 'package:livora/utils/themes/app_colors.dart';
 
 class CategoriesScreen extends StatefulWidget {
@@ -13,7 +15,8 @@ class CategoriesScreen extends StatefulWidget {
 }
 
 class _CategoriesScreenState extends State<CategoriesScreen> {
-  ApiService apiService = ApiService();
+  WordRepository wordRepository = WordRepository();
+  CategoryRepository categoryRepository = CategoryRepository();
   var categories = <Category>[].obs;
 
   @override
@@ -23,7 +26,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   }
 
   Future<void> loadCategories() async {
-    categories.value = await apiService.getCategories();
+    categories.value = await categoryRepository.fetchCategories();
   }
 
   @override
@@ -46,10 +49,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               index: index,
               showBadge: true,
               badgeText: category.wordCount == null ? "0" : category.wordCount.toString(),
-              onTap: () {
-                WordRepository wordRepository = WordRepository();
-                wordRepository.fetchWordsByCategory(category.id);
-                print('Kategoriye tıklandı: ${category.categoryName}');
+              onTap: () async {
+                List<Word> words = await wordRepository.fetchWordsByCategory(category.id);
+                Get.offAll(WordListScreen(words: words));
               },
             );
           },

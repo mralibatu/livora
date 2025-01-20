@@ -8,6 +8,11 @@ class CategoryRepository{
 
   Future<List<Category>> fetchCategories() async{
     List<Category> categories = await apiService.getCategories();
+    return categories;
+  }
+
+  Future<List<Category>> fetchRandomCategories() async{
+    List<Category> categories = await apiService.getCategories();
     Random rnd = Random();
     rnd.nextInt(categories.length);
     categories = categories.toList().where((category) => rnd.nextBool()).take(4).toList();

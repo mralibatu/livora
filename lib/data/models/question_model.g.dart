@@ -36,8 +36,8 @@ Map<String, dynamic> _$OptionToJson(Option instance) => <String, dynamic>{
 
 MatchingPair _$MatchingPairFromJson(Map<String, dynamic> json) => MatchingPair(
       id: (json['id'] as num).toInt(),
-      itemLeft: json['itemLeft'] as String,
-      itemRight: json['itemRight'] as String,
+      itemLeft: json['item_left'] as String,
+      itemRight: json['item_right'] as String,
     );
 
 Map<String, dynamic> _$MatchingPairToJson(MatchingPair instance) =>

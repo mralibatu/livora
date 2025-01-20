@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:livora/data/models/exam_model.dart';
+import 'package:livora/data/models/question_model.dart';
+import 'package:livora/data/repositories/exam_repository.dart';
+import 'package:livora/routes/pages.dart';
+import 'package:livora/screens/widgets/loading_indicator.dart';
 
 class MatchingPairsExam extends StatefulWidget {
-  const MatchingPairsExam({super.key});
+  MatchingPairsExam({required this.exam,required this.examStat,super.key});
+
+  Exam exam;
+  ExamStat examStat;
 
   @override
   State<MatchingPairsExam> createState() => _MatchingPairsExamState();
@@ -13,16 +21,15 @@ class _MatchingPairsExamState extends State<MatchingPairsExam>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
+  ExamRepository examRepository = ExamRepository();
+
+  var isLoading = true;
+
   // Keep track of matched pairs
-  final Map<String, String> matchedPairs = {};
+  Map<String, String> matchedPairs = {};
 
   // Sample question data - Replace with your actual data
-  final List<Map<String, String>> questionPairs = [
-    {'word': 'Apple', 'meaning': 'A fruit that grows on trees'},
-    {'word': 'Book', 'meaning': 'A written or printed work'},
-    {'word': 'Car', 'meaning': 'A road vehicle with wheels'},
-    {'word': 'Dog', 'meaning': 'A domestic four-legged animal'},
-  ];
+  List<MatchingPair> questionPairs = [];
 
   // Shuffled lists for display
   late List<String> leftItems;
@@ -30,9 +37,9 @@ class _MatchingPairsExamState extends State<MatchingPairsExam>
 
   @override
   void initState() {
+    _loadQuestions();
     super.initState();
     _initializeAnimations();
-    _initializeQuestions();
   }
 
   void _initializeAnimations() {
@@ -50,14 +57,13 @@ class _MatchingPairsExamState extends State<MatchingPairsExam>
   }
 
   void _initializeQuestions() {
-    // Create and shuffle the lists
-    leftItems = questionPairs.map((pair) => pair['word']!).toList()..shuffle();
-    rightItems = questionPairs.map((pair) => pair['meaning']!).toList()..shuffle();
+    leftItems = questionPairs.map((pair) => pair.itemLeft).toList()..shuffle();
+    rightItems = questionPairs.map((pair) => pair.itemRight).toList()..shuffle();
   }
 
-  bool isCorrectMatch(String word, String meaning) {
+  bool isCorrectMatch(String left, String right) {
     return questionPairs.any((pair) =>
-    pair['word'] == word && pair['meaning'] == meaning);
+    pair.itemLeft == left && pair.itemRight == right);
   }
 
   void _handleMatch(String word, String meaning) {
@@ -139,7 +145,7 @@ class _MatchingPairsExamState extends State<MatchingPairsExam>
         backgroundColor: Colors.transparent,
         foregroundColor: Theme.of(context).primaryColor,
       ),
-      body: Container(
+      body: isLoading ? FancyLoadingIndicator() : Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
@@ -539,7 +545,7 @@ class _MatchingPairsExamState extends State<MatchingPairsExam>
                                   child: OutlinedButton(
                                     onPressed: () {
                                       Navigator.of(context).pop();
-                                      Get.back();
+                                      Get.toNamed(Pages.exam_selection);
                                     },
                                     style: OutlinedButton.styleFrom(
                                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -603,5 +609,16 @@ class _MatchingPairsExamState extends State<MatchingPairsExam>
         ),
       ],
     );
+  }
+
+  void _loadQuestions() async {
+    QuestionOption options = await examRepository.getMatchingPairsByExamId(widget.exam.id);
+
+    options.matchingPairs!.forEach((e) => questionPairs.add(e));
+    print(questionPairs);
+    _initializeQuestions();
+    setState(() {
+      isLoading = false; // Update state after questions are loaded
+    });
   }
 }

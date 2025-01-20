@@ -24,7 +24,7 @@ Row HomeHeading() {
                 width: AppSizes.h3 / 2,
               ),
               FutureBuilder(
-                future: userRepository.getStreak(1),
+                future: userRepository.getStreak(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     return Text(
@@ -52,7 +52,7 @@ Row HomeHeading() {
                 width: AppSizes.h3 / 2,
               ),
               FutureBuilder(
-                future: userRepository.getLearnedWords(1),
+                future: userRepository.getLearnedWords(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     return Text(

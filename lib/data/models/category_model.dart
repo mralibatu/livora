@@ -10,14 +10,14 @@ class Category {
   @JsonKey(name: 'difficulty_level')
   final int difficultyLevel;
   @JsonKey(name: 'wordCount')
-  final int wordCount;
+  final int? wordCount;
   final bool isWordCategory;
 
   Category({
     required this.id,
     required this.categoryName,
     required this.difficultyLevel,
-    required this.wordCount,
+    this.wordCount,
     required this.isWordCategory,
   });
 

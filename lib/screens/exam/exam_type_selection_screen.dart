@@ -3,8 +3,10 @@ import 'package:get/get.dart';
 import 'package:livora/controllers/main_controller.dart';
 import 'package:livora/data/data_sources/api/api_service.dart';
 import 'package:livora/data/models/exam_model.dart';
+import 'package:livora/data/repositories/exam_repository.dart';
 import 'package:livora/routes/pages.dart';
 import 'package:livora/routes/routes.dart';
+import 'package:livora/screens/exam/matching_pairs_exam.dart';
 import 'package:livora/screens/exam/multiple_selection_exam.dart';
 import 'package:livora/screens/home/widgets/custom_bottom_bar.dart';
 
@@ -12,13 +14,17 @@ class ExamTypeSelectionScreen extends StatefulWidget {
   ExamTypeSelectionScreen({super.key});
 
   @override
-  State<ExamTypeSelectionScreen> createState() => _ExamTypeSelectionScreenState();
+  State<ExamTypeSelectionScreen> createState() =>
+      _ExamTypeSelectionScreenState();
 }
 
-class _ExamTypeSelectionScreenState extends State<ExamTypeSelectionScreen> with SingleTickerProviderStateMixin {
+class _ExamTypeSelectionScreenState extends State<ExamTypeSelectionScreen>
+    with SingleTickerProviderStateMixin {
   MainController mainController = Get.find<MainController>();
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
+
+  ExamRepository examRepository = ExamRepository();
 
   @override
   void initState() {
@@ -73,7 +79,6 @@ class _ExamTypeSelectionScreenState extends State<ExamTypeSelectionScreen> with 
               opacity: _fadeAnimation,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const SizedBox(height: 20),
                   _buildHeader(context),
@@ -97,16 +102,47 @@ class _ExamTypeSelectionScreenState extends State<ExamTypeSelectionScreen> with 
                       _buildExamTypeCard(
                         context: context,
                         title: 'Multiple Choice Exam',
-                        description: 'Select the correct answer from given options',
+                        description:
+                            'Select the correct answer from given options',
                         icon: Icons.check_circle_outline,
                         gradient: [
                           Colors.purple.shade300,
                           Colors.purple.shade600,
                         ],
                         onTap: () async {
-                          Exam exam = await ApiService.apiService.getExam(1);
-                          print(exam);
-                          Get.to(MultipleChoiceExam(exam: exam));
+                          Get.toNamed(Pages.exam_selection);
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      _buildExamTypeCard(
+                        context: context,
+                        title: 'Random Exam',
+                        description: 'Let\'s solve a random exam!',
+                        icon: Icons.shuffle,
+                        gradient: [
+                          Colors.red.shade300,
+                          Colors.red.shade600,
+                        ],
+                        onTap: () async {
+                          Exam randomExam =
+                              await examRepository.getRandomExam();
+                          ExamStat stats = await examRepository
+                              .getExamStatById(randomExam.id);
+                          if (randomExam.isMatching) {
+                            Get.to(
+                              MatchingPairsExam(
+                                exam: randomExam,
+                                examStat: stats,
+                              ),
+                            );
+                          } else {
+                            Get.to(
+                              MultipleChoiceExam(
+                                exam: randomExam,
+                                examStat: stats,
+                              ),
+                            );
+                          }
                         },
                       ),
                     ],
@@ -141,16 +177,16 @@ class _ExamTypeSelectionScreenState extends State<ExamTypeSelectionScreen> with 
           Text(
             'Select Exam Type',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).primaryColor,
-            ),
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
+                ),
           ),
           const SizedBox(height: 12),
           Text(
             'Choose the type of exam you want to take',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Colors.grey[600],
-            ),
+                  color: Colors.grey[600],
+                ),
           ),
         ],
       ),
@@ -214,16 +250,16 @@ class _ExamTypeSelectionScreenState extends State<ExamTypeSelectionScreen> with 
                       Text(
                         title,
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         description,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.white.withOpacity(0.9),
-                        ),
+                              color: Colors.white.withOpacity(0.9),
+                            ),
                       ),
                     ],
                   ),

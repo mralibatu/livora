@@ -25,24 +25,24 @@ class ShakeState {
 class BallIndicator extends StatefulWidget {
   final Widget child;
   final AsyncCallback onRefresh;
-  final double acceleration;
+  double acceleration;
   final double ballRadius;
   final double shakeOffset;
   final List<Color> ballColors;
   final double strokeWidth;
   final IndicatorController? controller;
 
-  const BallIndicator({
+  BallIndicator({
     super.key,
     required this.child,
     required this.onRefresh,
-    this.acceleration = 1.8,
+    this.acceleration = 2,
     this.ballRadius = 25.0,
     this.strokeWidth = 4.0,
-    this.shakeOffset = 8.0,
-    this.ballColors = const [Colors.blue],
+    this.shakeOffset = 30.0,
+    this.ballColors = const [Colors.blue, Colors.blueAccent, Colors.lightGreenAccent, Colors.greenAccent],
     this.controller,
-  }) : assert(ballColors.length > 0, 'ballColors cannot be empty.');
+  }) : assert(ballColors.isNotEmpty, 'ballColors cannot be empty.');
 
   @override
   State<BallIndicator> createState() => _BallIndicatorState();
@@ -123,6 +123,8 @@ class _BallIndicatorState extends State<BallIndicator>
         shift: direction * widget.shakeOffset,
         isInitial: true,
       );
+
+      widget.acceleration = widget.acceleration * 1.02;
 
       // Update ball color
       if (widget.ballColors.length > 1) {
@@ -511,3 +513,4 @@ class ArrowPainter extends CustomPainter {
         oldDelegate.radius != radius;
   }
 }
+
