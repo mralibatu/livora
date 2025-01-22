@@ -10,7 +10,7 @@ import 'package:livora/screens/widgets/loading_indicator.dart';
 import 'package:livora/utils/themes/app_colors.dart';
 import 'package:livora/utils/themes/app_sizes.dart';
 
-Column CategorySelectionMenu() {
+Column categorySelectionMenu() {
   WordRepository wordRepository = WordRepository();
   return Column(
     children: [
@@ -27,19 +27,28 @@ Column CategorySelectionMenu() {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       EducationalMenuCard(
-                        image: Image.asset("assets/images/working.png"),
+                        image: Image.asset(
+                          "assets/images/business_world_icon.jpeg",
+                        ),
                         text: controller.randomCategories[0].categoryName,
                         onTap: () async {
-                          List<Word> words = await wordRepository.fetchWordsByCategory(controller.randomCategories[0].id);
+                          List<Word> words =
+                              await wordRepository.fetchWordsByCategory(
+                                  controller.randomCategories[0].id);
                           Get.to(() => WordListScreen(words: words));
                         },
                       ),
                       EducationalMenuCard(
-                        image: Image.asset("assets/images/working.png"),
+                        image:
+                            Image.asset("assets/images/daily_life_icon.jpeg"),
                         text: controller.randomCategories[1].categoryName,
                         onTap: () async {
-                          List<Word> words = await wordRepository.fetchWordsByCategory(controller.randomCategories[1].id);
-                          Get.to(WordListScreen(words: words,));
+                          List<Word> words =
+                              await wordRepository.fetchWordsByCategory(
+                                  controller.randomCategories[1].id);
+                          Get.to(WordListScreen(
+                            words: words,
+                          ));
                         },
                       ),
                     ],
@@ -51,18 +60,24 @@ Column CategorySelectionMenu() {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       EducationalMenuCard(
-                        image: Image.asset("assets/images/working.png"),
+                        image: Image.asset("assets/images/fashion_icon.jpeg"),
                         text: controller.randomCategories[2].categoryName,
                         onTap: () async {
-                          List<Word> words = await wordRepository.fetchWordsByCategory(controller.randomCategories[2].id);
-                          Get.to(WordListScreen(words: words,));
+                          List<Word> words =
+                              await wordRepository.fetchWordsByCategory(
+                                  controller.randomCategories[2].id);
+                          Get.to(WordListScreen(
+                            words: words,
+                          ));
                         },
                       ),
                       EducationalMenuCard(
-                        image: Image.asset("assets/images/working.png"),
+                        image: Image.asset("assets/images/sport_icon.jpeg"),
                         text: controller.randomCategories[3].categoryName,
                         onTap: () async {
-                          List<Word> words = await wordRepository.fetchWordsByCategory(controller.randomCategories[3].id);
+                          List<Word> words =
+                              await wordRepository.fetchWordsByCategory(
+                                  controller.randomCategories[3].id);
                           Get.to(() => WordListScreen(words: words));
                         },
                       ),

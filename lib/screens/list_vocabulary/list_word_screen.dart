@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:livora/controllers/main_controller.dart';
-import 'package:livora/data/models/category_model.dart';
 import 'package:livora/data/models/word_model.dart';
 import 'package:livora/data/repositories/word_repository.dart';
-import 'package:livora/routes/pages.dart';
 import 'package:livora/routes/routes.dart';
 import 'package:livora/screens/home/widgets/custom_bottom_bar.dart';
 import 'package:livora/screens/widgets/loading_indicator.dart';
-import 'package:livora/utils/themes/app_colors.dart';
 
 class WordListScreen extends StatefulWidget {
   List<Word> words;
@@ -27,7 +24,6 @@ class _WordListScreenState extends State<WordListScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     if (widget.words.isEmpty) {
       _loadWords();

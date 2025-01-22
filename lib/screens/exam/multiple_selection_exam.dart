@@ -447,7 +447,7 @@ class _MultipleChoiceExamState extends State<MultipleChoiceExam>
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                       setState(() {
-                                          Get.offAll(ExamTypeSelectionScreen());
+                                        Get.off(MultipleChoiceExam(exam: widget.exam, examStat: widget.examStat));
                                       });
                                     },
                                     style: ElevatedButton.styleFrom(
@@ -464,9 +464,13 @@ class _MultipleChoiceExamState extends State<MultipleChoiceExam>
                                 const SizedBox(width: 16),
                                 Expanded(
                                   child: OutlinedButton(
-                                    onPressed: () {
+                                    onPressed: () async {
                                       Navigator.of(context).pop();
-                                      Get.toNamed(Pages.exam_selection);
+                                      ExamStat examStat = await examRepository.getExamStatById(widget.exam.id);
+                                      examStat.point = ((correctAnswers / questions.length) * 100).toInt();
+                                      examStat.isCompleted = true;
+                                      examRepository.updateExamStats(examStat);
+                                      Get.offAllNamed(Pages.home);
                                     },
                                     style: OutlinedButton.styleFrom(
                                       padding: const EdgeInsets.symmetric(vertical: 16),

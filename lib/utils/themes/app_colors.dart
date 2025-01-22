@@ -26,4 +26,14 @@ class AppColors
     colors.shuffle();
     return colors[0];
   }
+
+  static List<Color> matchingPairsGradient = [
+  Colors.blue.shade300,
+  Colors.blue.shade600,
+  ];
+
+  static List<Color> multipleChoiceGradient = [
+    Colors.purple.shade300,
+    Colors.purple.shade600,
+  ];
 }

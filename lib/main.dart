@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:livora/controllers/main_controller.dart';
 import 'package:livora/routes/routes.dart';
 import 'package:livora/utils/app_constants.dart';
 import 'package:livora/utils/main_bindings.dart';

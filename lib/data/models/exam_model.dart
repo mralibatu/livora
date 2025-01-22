@@ -17,7 +17,6 @@ class Exam {
   final int createdById;
   @JsonKey(name: 'is_matching')
   final bool isMatching;
-  @JsonKey(name: 'examxuserexam')
   final String username;
 
   Exam({

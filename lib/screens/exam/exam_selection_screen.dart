@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:livora/data/data_sources/api/api_service.dart';
 import 'package:livora/data/models/exam_model.dart';
 import 'package:livora/data/repositories/exam_repository.dart';
-import 'package:livora/screens/exam/matching_pairs_exam.dart';
-import 'package:livora/screens/exam/multiple_selection_exam.dart';
+import 'package:livora/screens/exam/widgets/exam_selection_header.dart';
+import 'package:livora/screens/exam/widgets/exam_selection_list_exams.dart';
 import 'package:livora/screens/widgets/loading_indicator.dart';
-import 'package:livora/utils/themes/app_colors.dart';
+import 'package:livora/utils/themes/app_sizes.dart';
 
 class ExamSelection extends StatefulWidget {
   const ExamSelection({super.key});
@@ -21,17 +20,14 @@ class _ExamSelectionState extends State<ExamSelection>
   late Animation<double> _fadeAnimation;
   ExamRepository examRepository = ExamRepository();
 
-  // Sample exam data - Replace with your actual data
+  var isMatching = Get.arguments[0];
+
   List<Exam> exams = [];
   late ExamStats examStats;
-
-  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadExams();
-    _loadExamStats();
     _initializeAnimations();
   }
 
@@ -53,19 +49,6 @@ class _ExamSelectionState extends State<ExamSelection>
   void dispose() {
     _animationController.dispose();
     super.dispose();
-  }
-
-  Color _getDifficultyColor(String difficulty) {
-    switch (difficulty.toLowerCase()) {
-      case 'easy':
-        return Colors.green;
-      case 'medium':
-        return Colors.orange;
-      case 'hard':
-        return Colors.red;
-      default:
-        return Colors.grey;
-    }
   }
 
   @override
@@ -94,18 +77,32 @@ class _ExamSelectionState extends State<ExamSelection>
             opacity: _fadeAnimation,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: isLoading
-                  ? FancyLoadingIndicator()
-                  : Column(
+              child: FutureBuilder(
+                future: loadExams(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const FancyLoadingIndicator();
+                  } else if (snapshot.connectionState == ConnectionState.done) {
+                    return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildHeader(context),
+                        examSelectionHeader(context, exams, examStats),
                         const SizedBox(height: 24),
                         Expanded(
-                          child: _buildExamsList(),
+                          child: examSelectionListExams(exams, examStats),
                         ),
                       ],
-                    ),
+                    );
+                  } else {
+                    return Center(
+                      child: Text(
+                        "Error while getting exams",
+                        style: TextStyle(fontSize: AppSizes.h0),
+                      ),
+                    );
+                  }
+                },
+              ),
             ),
           ),
         ),
@@ -113,285 +110,12 @@ class _ExamSelectionState extends State<ExamSelection>
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 2,
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Welcome Back! 👋',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).primaryColor,
-                ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Choose an exam to get started',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Colors.grey[600],
-                ),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              _buildStatCard(
-                context,
-                'Available',
-                exams.length.toString(),
-                Icons.assignment_outlined,
-                Colors.blue,
-              ),
-              const SizedBox(width: 16),
-              _buildStatCard(
-                context,
-                'Completed',
-                '${examStats.completedExams}',
-                Icons.check_circle_outline,
-                Colors.green,
-              ),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatCard(
-    BuildContext context,
-    String label,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: color.withOpacity(0.3),
-            width: 1,
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              color: color,
-              size: 24,
-            ),
-            const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  value,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: color,
-                      ),
-                ),
-                Text(
-                  label,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: color.withOpacity(0.8),
-                      ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildExamsList() {
-    return ListView.builder(
-      itemCount: exams.length,
-      itemBuilder: (context, index) {
-        final exam = exams[index];
-        final difficulty = exam.isPrivate.toString();
-        final difficultyColor = _getDifficultyColor(difficulty);
-        final color = AppColors.getRandomColor();
-        return Container(
-          margin: const EdgeInsets.only(bottom: 16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                spreadRadius: 2,
-                blurRadius: 10,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: InkWell(
-            onTap: () async {
-              // Navigate to the appropriate exam type
-              if (!exam.isMatching) {
-                Get.to(
-                  () => MultipleChoiceExam(
-                    exam: exam,
-                    examStat: examStats.examStats[index],
-                  ),
-                );
-              } else {
-                Get.to(
-                  () => MatchingPairsExam(
-                    exam: exam,
-                    examStat: examStats.examStats[index],
-                  ),
-                );
-              }
-            },
-            borderRadius: BorderRadius.circular(16),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: (color).withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Icon(
-                          exam.isMatching
-                              ? Icons.compare_arrows
-                              : Icons.check_circle_outline,
-                          color: color,
-                          size: 24,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              exam.examName,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              exam.username,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(
-                                    color: Colors.grey[600],
-                                  ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Icon(
-                        Icons.chevron_right_rounded,
-                        color: Colors.grey[400],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      _buildExamDetail(
-                        context,
-                        Icons.timer_outlined,
-                        exam.timerSeconds == null
-                            ? "No Limit"
-                            : '${(exam.timerSeconds! / 60).ceil()} Minutes',
-                        Colors.orange,
-                      ),
-                      const SizedBox(width: 16),
-                      _buildExamDetail(
-                        context,
-                        Icons.trending_up_rounded,
-                        difficulty,
-                        difficultyColor,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildExamDetail(
-    BuildContext context,
-    IconData icon,
-    String label,
-    Color color,
-  ) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              color: color,
-              size: 16,
-            ),
-            const SizedBox(width: 4),
-            Flexible(
-              child: Text(
-                label,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: color,
-                      fontWeight: FontWeight.bold,
-                    ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _loadExams() async {
-    exams = await examRepository.getExams();
+  Future<void> loadExams() async {
+    if (isMatching) {
+      exams = await examRepository.getMatchingPairsExams();
+    } else {
+      exams = await examRepository.getMultipleChoiceExams();
+    }
     examStats = await examRepository.getExamStats();
-    setState(() {
-      isLoading = false;
-    });
-  }
-
-  Future<void> _loadExamStats() async {
-    examStats = await ApiService.apiService.getUserExamStats(1);
   }
 }

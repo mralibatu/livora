@@ -1,10 +1,10 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:livora/controllers/main_controller.dart';
-import 'package:livora/main.dart';
+import 'package:livora/data/models/word_model.dart';
+import 'package:livora/data/repositories/word_repository.dart';
 import 'package:livora/screens/break_daily_word/daily_word_screen.dart';
-import 'package:livora/screens/categories/categories_screen.dart';
+import 'package:livora/screens/break_daily_word/widgets/current_egg_image.dart';
 import 'package:livora/screens/widgets/ball_indicator.dart';
 import 'package:livora/screens/widgets/snake_light_effect_icon.dart';
 import 'package:livora/utils/themes/app_sizes.dart';
@@ -19,10 +19,9 @@ class BreakDailyWordScreen extends StatefulWidget {
 class _BreakDailyWordScreenState extends State<BreakDailyWordScreen>
     with SingleTickerProviderStateMixin {
   MainController mainController = Get.find<MainController>();
+  WordRepository wordRepository = WordRepository();
 
   Future<void> onRefresh() async {
-    Random rnd = Random();
-    //int seconds = 3 + rnd.nextInt(6);
     int seconds = 3;
     mainController.changeEgg(seconds);
     await Future.delayed(Duration(seconds: seconds));
@@ -31,14 +30,11 @@ class _BreakDailyWordScreenState extends State<BreakDailyWordScreen>
   }
 
   Future<void> toWordPage() async {
-    await Future.delayed(Duration(seconds: 1));
+    Word word = await wordRepository.fetchRandomWord();
     DailyWordSnackbar.show(
       context,
-      word: "word",
-      partOfSpeech: "partOfSpeech",
-      definition: "definition",
-      example: "example",
-      displayDuration: Duration(seconds: 10),
+      word: word,
+      displayDuration: const Duration(seconds: 10),
     );
   }
 
@@ -52,8 +48,8 @@ class _BreakDailyWordScreenState extends State<BreakDailyWordScreen>
         children: [
           Center(
             child: Transform.scale(
-              child: Image.asset("assets/images/bg-egg.png"),
               scale: 1.5,
+              child: Image.asset("assets/images/bg-egg.png"),
             ),
           ),
           BallIndicator(
@@ -69,23 +65,15 @@ class _BreakDailyWordScreenState extends State<BreakDailyWordScreen>
                         GetBuilder<MainController>(
                           id: 'egg',
                           builder: (controller) {
-                            return AnimatedSwitcher(duration: Duration(milliseconds: 300),
-                              transitionBuilder: (child, animation) {
-                                return FadeTransition(
-                                  opacity: animation,
-                                  child: child,
-                                );
-                              },
-                              child: controller.isFirstImage
-                                  ? Image.asset(
-                                'assets/images/just-egg.png',
-                                key: ValueKey('image1'),
-                              )
-                                  : Image.asset(
-                                'assets/images/crack-egg.png',
-                                key: ValueKey('image2'),
-                              ),
-                            );
+                            return AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 300),
+                                transitionBuilder: (child, animation) {
+                                  return FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  );
+                                },
+                                child: currentEggImage(controller));
                           },
                         ),
                       ],

@@ -31,6 +31,16 @@ class ApiService {
     return (response.data as List).map((json) => Exam.fromJson(json)).toList();
   }
 
+  Future<List<Exam>> getMultipleChoiceExams() async {
+    final response = await _dio.get('/exams/exams');
+    return (response.data as List).map((json) => Exam.fromJson(json)).toList();
+  }
+
+  Future<List<Exam>> getMatchingPairsExams() async {
+    final response = await _dio.get('/exams/matchingexams');
+    return (response.data as List).map((json) => Exam.fromJson(json)).toList();
+  }
+
   // Fetch a Specific Exam
   Future<Exam> getExam(int id) async {
     final response = await _dio.get('/exams/$id');

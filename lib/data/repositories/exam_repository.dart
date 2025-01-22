@@ -12,6 +12,14 @@ class ExamRepository {
     return await apiService.getExams();
   }
 
+  Future<List<Exam>> getMultipleChoiceExams() async{
+    return await apiService.getMultipleChoiceExams();
+  }
+
+  Future<List<Exam>> getMatchingPairsExams() async{
+    return await apiService.getMatchingPairsExams();
+  }
+
   Future<ExamStats> getExamStats() async{
     return await apiService.getUserExamStats(mainController.user!.id);
   }
@@ -32,5 +40,9 @@ class ExamRepository {
     List<Exam> exams = await apiService.getExams();
     exams.shuffle();
     return exams.first;
+  }
+
+  Future<void> updateExamStats(ExamStat examStat) async{
+    await apiService.updateUserExam(mainController.user!.id, examStat);
   }
 }

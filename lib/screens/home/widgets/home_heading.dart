@@ -10,7 +10,7 @@ Row HomeHeading() {
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
       CircleAwatarWithIcon(
-          Image.asset("assets/images/working.png"), Icons.school),
+          Image.asset("assets/images/test_pp.jpeg"), Icons.school),
       Row(
         children: [
           Row(

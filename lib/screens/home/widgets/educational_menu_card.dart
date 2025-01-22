@@ -75,7 +75,9 @@ class EducationalMenuCard extends StatelessWidget {
                         color: Colors.white.withOpacity(0.9),
                       ),
                       padding: const EdgeInsets.all(8),
-                      child: image,
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child: image),
                     ),
                   ),
 

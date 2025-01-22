@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:livora/controllers/main_controller.dart';
-import 'package:livora/data/data_sources/api/api_service.dart';
 import 'package:livora/data/models/exam_model.dart';
 import 'package:livora/data/repositories/exam_repository.dart';
 import 'package:livora/routes/pages.dart';
 import 'package:livora/routes/routes.dart';
 import 'package:livora/screens/exam/matching_pairs_exam.dart';
 import 'package:livora/screens/exam/multiple_selection_exam.dart';
+import 'package:livora/screens/exam/widgets/exam_type_selection_exam_card.dart';
+import 'package:livora/screens/exam/widgets/exam_type_selection_header.dart';
 import 'package:livora/screens/home/widgets/custom_bottom_bar.dart';
+import 'package:livora/utils/themes/app_colors.dart';
 
 class ExamTypeSelectionScreen extends StatefulWidget {
-  ExamTypeSelectionScreen({super.key});
+  const ExamTypeSelectionScreen({super.key});
 
   @override
   State<ExamTypeSelectionScreen> createState() =>
@@ -81,40 +83,34 @@ class _ExamTypeSelectionScreenState extends State<ExamTypeSelectionScreen>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(height: 20),
-                  _buildHeader(context),
+                  examTypeSelectionHeader(context),
                   Column(
                     children: [
                       const SizedBox(height: 40),
-                      _buildExamTypeCard(
+                      examSelectionCard(
                         context: context,
                         title: 'Matching Pair Exam',
                         description: 'Match related items from two columns',
                         icon: Icons.compare_arrows,
-                        gradient: [
-                          Colors.blue.shade300,
-                          Colors.blue.shade600,
-                        ],
+                        gradient: AppColors.matchingPairsGradient,
                         onTap: () {
-                          Get.toNamed(Pages.exam_selection);
+                          Get.toNamed(Pages.exam_selection, arguments: [true]);
                         },
                       ),
                       const SizedBox(height: 20),
-                      _buildExamTypeCard(
+                      examSelectionCard(
                         context: context,
                         title: 'Multiple Choice Exam',
                         description:
                             'Select the correct answer from given options',
                         icon: Icons.check_circle_outline,
-                        gradient: [
-                          Colors.purple.shade300,
-                          Colors.purple.shade600,
-                        ],
+                        gradient: AppColors.multipleChoiceGradient,
                         onTap: () async {
-                          Get.toNamed(Pages.exam_selection);
+                          Get.toNamed(Pages.exam_selection, arguments: [false]);
                         },
                       ),
                       const SizedBox(height: 20),
-                      _buildExamTypeCard(
+                      examSelectionCard(
                         context: context,
                         title: 'Random Exam',
                         description: 'Let\'s solve a random exam!',
@@ -149,127 +145,6 @@ class _ExamTypeSelectionScreenState extends State<ExamTypeSelectionScreen>
                   ),
                 ],
               ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 2,
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Select Exam Type',
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).primaryColor,
-                ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Choose the type of exam you want to take',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Colors.grey[600],
-                ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildExamTypeCard({
-    required BuildContext context,
-    required String title,
-    required String description,
-    required IconData icon,
-    required List<Color> gradient,
-    required VoidCallback onTap,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: gradient.last.withOpacity(0.3),
-            spreadRadius: 1,
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
-          child: Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: gradient,
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(
-                    icon,
-                    size: 32,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(width: 20),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        description,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Colors.white.withOpacity(0.9),
-                            ),
-                      ),
-                    ],
-                  ),
-                ),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  color: Colors.white.withOpacity(0.9),
-                  size: 20,
-                ),
-              ],
             ),
           ),
         ),

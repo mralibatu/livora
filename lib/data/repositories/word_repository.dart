@@ -14,6 +14,12 @@ class WordRepository{
     return words;
   }
 
+  Future<Word> fetchRandomWord() async{
+    List<Word> words = await apiService.getWords();
+    words.shuffle();
+    return words.first;
+  }
+
   Future<List<Word>> fetchWordsByCategory(int categoryId) async{
     List<Word> words = await apiService.getWordsByCategory(categoryId);
     print(words);

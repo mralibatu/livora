@@ -543,9 +543,13 @@ class _MatchingPairsExamState extends State<MatchingPairsExam>
                                 const SizedBox(width: 16),
                                 Expanded(
                                   child: OutlinedButton(
-                                    onPressed: () {
+                                    onPressed: () async {
                                       Navigator.of(context).pop();
-                                      Get.toNamed(Pages.exam_selection);
+                                      ExamStat examStat = await examRepository.getExamStatById(widget.exam.id);
+                                      examStat.point = 100;
+                                      examStat.isCompleted = true;
+                                      examRepository.updateExamStats(examStat);
+                                      Get.offAllNamed(Pages.home);
                                     },
                                     style: OutlinedButton.styleFrom(
                                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -615,7 +619,6 @@ class _MatchingPairsExamState extends State<MatchingPairsExam>
     QuestionOption options = await examRepository.getMatchingPairsByExamId(widget.exam.id);
 
     options.matchingPairs!.forEach((e) => questionPairs.add(e));
-    print(questionPairs);
     _initializeQuestions();
     setState(() {
       isLoading = false; // Update state after questions are loaded

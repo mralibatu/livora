@@ -13,7 +13,7 @@ Exam _$ExamFromJson(Map<String, dynamic> json) => Exam(
       isPrivate: json['is_private'] as bool,
       createdById: (json['created_by_id'] as num).toInt(),
       isMatching: json['is_matching'] as bool,
-      username: json["examxuser"] == null ? "" : json["examxuser"]["username"],
+      username: "mralibatu" //For testing,
     );
 
 Map<String, dynamic> _$ExamToJson(Exam instance) => <String, dynamic>{

@@ -6,7 +6,7 @@ import 'package:livora/data/models/word_model.dart';
 
 class UserRepository{
   ApiService apiService = ApiService.apiService;
-  //MainController mainController = Get.find<MainController>();
+  //MainController mainController = Get.find<MainController>(); //There is get error in there
 
   Future<User> fetchUser(int userId) async{
     return await apiService.getUserById(userId);

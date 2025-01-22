@@ -1,44 +1,34 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
-
 import 'package:get/get.dart';
+import 'package:livora/data/models/word_model.dart';
 import 'package:livora/routes/pages.dart';
+import 'package:livora/screens/break_daily_word/widgets/daily_word_card_content.dart';
+import 'package:livora/screens/break_daily_word/widgets/daily_word_card_header.dart';
 
 class DailyWordSnackbar extends StatefulWidget {
-  final String word;
-  final String partOfSpeech;
-  final String definition;
-  final String example;
+  final Word word;
   final VoidCallback? onClose;
   final Duration displayDuration;
 
   const DailyWordSnackbar({
     super.key,
     required this.word,
-    required this.partOfSpeech,
-    required this.definition,
-    required this.example,
     this.onClose,
     this.displayDuration = const Duration(seconds: 5),
   });
 
   static void show(
-      BuildContext context, {
-        required String word,
-        required String partOfSpeech,
-        required String definition,
-        required String example,
-        Duration displayDuration = const Duration(seconds: 5),
-      }) {
+    BuildContext context, {
+    required Word word,
+    Duration displayDuration = const Duration(seconds: 5),
+  }) {
     OverlayState? overlayState = Overlay.of(context);
     OverlayEntry? overlayEntry;
 
     overlayEntry = OverlayEntry(
       builder: (context) => DailyWordSnackbar(
         word: word,
-        partOfSpeech: partOfSpeech,
-        definition: definition,
-        example: example,
         displayDuration: displayDuration,
         onClose: () {
           overlayEntry?.remove();
@@ -93,7 +83,8 @@ class _DailyWordSnackbarState extends State<DailyWordSnackbar>
     _animationController.forward();
 
     // Start exit animation before the overlay is removed
-    Future.delayed(widget.displayDuration - const Duration(milliseconds: 500), () {
+    Future.delayed(widget.displayDuration - const Duration(milliseconds: 500),
+        () {
       if (mounted) {
         _animationController.reverse();
       }
@@ -137,9 +128,8 @@ class _DailyWordSnackbarState extends State<DailyWordSnackbar>
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        _buildHeader(context),
-                        _buildContent(context),
-                        _buildFooter(context),
+                        dailyWordCardHeader(context, widget.onClose),
+                        dailyWordCardContent(context, widget.word),
                       ],
                     ),
                   ),
@@ -148,168 +138,6 @@ class _DailyWordSnackbarState extends State<DailyWordSnackbar>
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withOpacity(0.1),
-        border: Border(
-          bottom: BorderSide(
-            color: Theme.of(context).primaryColor.withOpacity(0.1),
-          ),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Icon(
-                Icons.auto_awesome,
-                color: Theme.of(context).primaryColor,
-                size: 20,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                'Word of the Day',
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-          IconButton(
-            icon: const Icon(Icons.close, size: 20),
-            onPressed: widget.onClose,
-            color: Colors.grey[600],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildContent(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(24.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text(
-                widget.word,
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).primaryColor,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  widget.partOfSpeech,
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            widget.definition,
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.black87,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.grey[50],
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: Colors.grey[200]!,
-              ),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(
-                  Icons.format_quote,
-                  color: Colors.grey[400],
-                  size: 20,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    widget.example,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFooter(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(
-            color: Theme.of(context).primaryColor.withOpacity(0.1),
-          ),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          TextButton.icon(
-            onPressed: () {
-              // Add to favorites functionality
-            },
-            icon: const Icon(Icons.bookmark_border),
-            label: const Text('Save'),
-            style: TextButton.styleFrom(
-              foregroundColor: Theme.of(context).primaryColor,
-            ),
-          ),
-          const SizedBox(width: 8),
-          FilledButton.icon(
-            onPressed: () {
-              // Practice functionality
-            },
-            icon: const Icon(Icons.school),
-            label: const Text('Practice'),
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(context).primaryColor,
-              foregroundColor: Colors.white,
-            ),
-          ),
-        ],
       ),
     );
   }
