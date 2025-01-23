@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:livora/controllers/main_controller.dart';
 import 'package:livora/routes/pages.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -28,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen>
       end: 1.0,
     ).animate(CurvedAnimation(
       parent: _controller,
-      curve: Interval(0.0, 0.5, curve: Curves.easeIn),
+      curve: const Interval(0.0, 0.5, curve: Curves.easeIn),
     ));
 
     _slideAnimation = Tween<Offset>(
@@ -36,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen>
       end: Offset.zero,
     ).animate(CurvedAnimation(
       parent: _controller,
-      curve: Interval(0.5, 1.0, curve: Curves.easeOut),
+      curve: const Interval(0.5, 1.0, curve: Curves.easeOut),
     ));
 
     _controller.forward();

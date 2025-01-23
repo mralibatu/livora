@@ -26,7 +26,7 @@ class _BreakDailyWordScreenState extends State<BreakDailyWordScreen>
     mainController.changeEgg(seconds);
     await Future.delayed(Duration(seconds: seconds));
     toWordPage();
-    mainController.isFirstImage = true;
+    mainController.isEggFirstImage = true;
   }
 
   Future<void> toWordPage() async {
