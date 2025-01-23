@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:livora/data/models/exam_model.dart';
-import 'package:livora/screens/exam/widgets/exam_selection_stats.dart';
 
-Widget examSelectionHeader(
-    BuildContext context, List<Exam> exams, ExamStats examStats) {
+Widget matchingPairsExamHeader(
+    BuildContext context, int matchedPairsLength, int questionPairsLength) {
   return Container(
     padding: const EdgeInsets.all(24),
     decoration: BoxDecoration(
@@ -19,10 +17,9 @@ Widget examSelectionHeader(
       ],
     ),
     child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Welcome Back! 👋',
+          'Match the Words',
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: Theme.of(context).primaryColor,
@@ -30,31 +27,18 @@ Widget examSelectionHeader(
         ),
         const SizedBox(height: 8),
         Text(
-          'Choose an exam to get started',
+          'Drag words from left to right to match them',
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: Colors.grey[600],
               ),
         ),
         const SizedBox(height: 16),
-        Row(
-          children: [
-            examSelectionStats(
-              context,
-              'Available',
-              exams.length.toString(),
-              Icons.assignment_outlined,
-              Colors.blue,
-            ),
-            const SizedBox(width: 16),
-            examSelectionStats(
-              context,
-              'Completed',
-              '${examStats.completedExams}',
-              Icons.check_circle_outline,
-              Colors.green,
-            ),
-          ],
-        )
+        LinearProgressIndicator(
+          value: matchedPairsLength / questionPairsLength,
+          backgroundColor: Colors.grey[200],
+          color: Theme.of(context).primaryColor,
+          borderRadius: BorderRadius.circular(8),
+        ),
       ],
     ),
   );

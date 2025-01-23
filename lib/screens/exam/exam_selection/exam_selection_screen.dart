@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:livora/data/models/exam_model.dart';
 import 'package:livora/data/repositories/exam_repository.dart';
-import 'package:livora/screens/exam/widgets/exam_selection_header.dart';
-import 'package:livora/screens/exam/widgets/exam_selection_list_exams.dart';
+import 'package:livora/screens/exam/exam_selection/widgets/exam_selection_header.dart';
+import 'package:livora/screens/exam/exam_selection/widgets/exam_selection_list_exams.dart';
 import 'package:livora/screens/widgets/loading_indicator.dart';
 import 'package:livora/utils/themes/app_sizes.dart';
 

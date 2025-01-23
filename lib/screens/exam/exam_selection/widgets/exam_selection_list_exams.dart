@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:livora/data/models/exam_model.dart';
-import 'package:livora/screens/exam/matching_pairs_exam.dart';
-import 'package:livora/screens/exam/multiple_selection_exam.dart';
+import 'package:livora/screens/exam/matching_pairs/matching_pairs_exam.dart';
+import 'package:livora/screens/exam/multiple_selection/multiple_selection_exam.dart';
 import 'package:livora/utils/common_methods/common_methods.dart';
 import 'package:livora/utils/themes/app_colors.dart';
 

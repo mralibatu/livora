@@ -5,10 +5,10 @@ import 'package:livora/data/models/exam_model.dart';
 import 'package:livora/data/repositories/exam_repository.dart';
 import 'package:livora/routes/pages.dart';
 import 'package:livora/routes/routes.dart';
-import 'package:livora/screens/exam/matching_pairs_exam.dart';
-import 'package:livora/screens/exam/multiple_selection_exam.dart';
-import 'package:livora/screens/exam/widgets/exam_type_selection_exam_card.dart';
-import 'package:livora/screens/exam/widgets/exam_type_selection_header.dart';
+import 'package:livora/screens/exam/exam_selection/widgets/exam_type_selection_exam_card.dart';
+import 'package:livora/screens/exam/exam_selection/widgets/exam_type_selection_header.dart';
+import 'package:livora/screens/exam/matching_pairs/matching_pairs_exam.dart';
+import 'package:livora/screens/exam/multiple_selection/multiple_selection_exam.dart';
 import 'package:livora/screens/home/widgets/custom_bottom_bar.dart';
 import 'package:livora/utils/themes/app_colors.dart';
 

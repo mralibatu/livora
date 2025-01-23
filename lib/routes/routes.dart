@@ -1,8 +1,8 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:livora/routes/pages.dart';
 import 'package:livora/screens/break_daily_word/break_daily_word_screen.dart';
-import 'package:livora/screens/exam/exam_selection_screen.dart';
-import 'package:livora/screens/exam/exam_type_selection_screen.dart';
+import 'package:livora/screens/exam/exam_selection/exam_selection_screen.dart';
+import 'package:livora/screens/exam/exam_selection/exam_type_selection_screen.dart';
 import 'package:livora/screens/home/home_screen.dart';
 import 'package:livora/screens/list_vocabulary/list_wordLists_screen.dart';
 import 'package:livora/screens/splash.dart';
